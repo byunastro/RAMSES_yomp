@@ -1507,11 +1507,14 @@ contains
                 ! Mandatory data
                 read(1,POS=pos_blck+3*sizeof(dummy_real)*(kpart-1)) xx_sp(i,1:3)
                 read(1,POS=vel_blck+3*sizeof(dummy_real)*(kpart-1)) vv_sp(i,1:3)
+                
                 if(header%mass(type_index).gt.0) then
+                   ! write(*,*) "Read mass from header"  ramses_yomp_hwrdm
                    mm_sp(i) = real(header%mass(type_index))
                 else
                    opart=opart+1
                    read(1,POS=mass_blck+sizeof(dummy_real)*(opart-1)) mm_sp(i)
+                   ! write(*,*) "Read mass from data block after header" ramses_yomp_hwrdm
                 endif
                 ! Optional data
                 if(id_blck.ne.-1) then
@@ -1545,7 +1548,7 @@ contains
                    gadget_scale_v = 1e3*SQRT(aexp)/header%boxsize*aexp/100.
                 endif
                 xx(i,:)   = xx_sp(i,:)*(gadget_scale_l/scale_l)*ic_scale_pos
-                vv(i,:)   = vv_sp(i,:)*(gadget_scale_v/scale_v)*ic_scale_vel
+                vv(i,:)   = vv_sp(i,:)*(gadget_scale_v/scale_v)*ic_scale_vel 
                 mm(i)     = mm_sp(i)*(gadget_scale_m/scale_m)*ic_scale_mass
                 ! mm(i)     = 10e6 ! ramses_dice_omp_m10e6
                 
