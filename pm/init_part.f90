@@ -1548,7 +1548,6 @@ contains
                 vv(i,:)   = vv_sp(i,:)*(gadget_scale_v/scale_v)*ic_scale_vel
                 mm(i)     = mm_sp(i)*(gadget_scale_m/scale_m)*ic_scale_mass
                 ! mm(i)     = 10e6 ! ramses_dice_omp_m10e6
-                
                 if(cosmo) then
                    if(type_index .eq. 1) mass_sph = mm(i)
                    if(xx(i,1)<  0.0d0  )xx(i,1)=xx(i,1)+dble(nx)
@@ -1672,6 +1671,22 @@ contains
                       typep(ipart)%family = FAM_DM
                       typep(ipart)%tag    = 0
                    end if
+
+                   !!----- JS
+                   !! Here for remedy for fixing family values for star particles whose gadget types are 2 and 3
+                   !!-----
+                   if(type_index .eq. 2) then
+                      typep(ipart)%family = FAM_DM
+                      typep(ipart)%tag = 0
+                   else if(type_index .eq. 3) then
+                      typep(ipart)%family = FAM_STAR
+                      typep(ipart)%tag = 0
+                   else if(type_index .eq. 4) then
+                      typep(ipart)%family = FAM_STAR
+                      typep(ipart)%tag = 0
+                   endif
+
+
                    up(ipart)      = uu(i)
                    if(ic_mask_ptype.gt.-1)then
                       if(ic_mask_ptype.eq.type_index-1)then
