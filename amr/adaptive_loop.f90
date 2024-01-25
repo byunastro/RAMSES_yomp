@@ -103,7 +103,7 @@ subroutine adaptive_loop
 
   do ! Main time loop
                                call timer('coarse levels','start')
-
+  
 #ifndef WITHOUTMPI
      tt1=MPI_WTIME()
 #endif
@@ -157,6 +157,7 @@ subroutine adaptive_loop
         end do
      endif
 
+
      ! MC Tracer !
      ! Reset fluxes
      if(MC_tracer) then
@@ -171,7 +172,6 @@ subroutine adaptive_loop
      ! Call base level
      call amr_step(levelmin,1)
                                call timer('coarse levels','start')
-
      if(levelmin.lt.nlevelmax.and.(.not.static.or.(nstep_coarse_old.eq.nstep_coarse.and.restart_remap)))then
         do ilevel=levelmin-1,1,-1
            ! Hydro book-keeping

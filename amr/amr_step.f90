@@ -363,7 +363,6 @@ recursive subroutine amr_step(ilevel,icount)
          call clean_stop
      end if
   end if
-
   ! Set unew equal to uold
                                call timer('hydro - set unew','start')
   if(hydro)call set_unew(ilevel)
@@ -636,8 +635,10 @@ recursive subroutine amr_step(ilevel,icount)
         write(*,998) 'dM Prod (II)  =', dM_prod*(scale_d*scale_l**3)/(dtnew(levelmin)*scale_t)
         if(snia)write(*,998) 'dM Prod (Ia)  =', dM_prod_Ia*(scale_d*scale_l**3)/(dtnew(levelmin)*scale_t)
         write(*,998) 'dM Prod (SW)  =', dM_prod_SW*(scale_d*scale_l**3)/(dtnew(levelmin)*scale_t)
-        write(*,*) 'time :', t*scale_t
-        write(*,*) 'dt   :', dtnew(levelmin)*scale_t
+        write(*,*) 'time [s] :', t*scale_t
+        write(*,*) 'time [Myr] :', t
+        write(*,*) 'dt [s] :', dtnew(levelmin)*scale_t
+        write(*,*) 'dt [Myr] :', dtnew(levelmin)
      endif
      dM_acc=0.0d0
      dM_spu=0.0d0

@@ -27,6 +27,8 @@ subroutine force_fine(ilevel,icount)
   real(dp),dimension(1:nvector,1:ndim)::xx,ff
   common /omp_force_fine/skip_loc,scale,dx_loc
 
+real(dp)::scale_l,scale_t,scale_d,scale_v,scale_nH,scale_T2
+
   if(numbtot(1,ilevel)==0)return
   if(verbose)write(*,111)ilevel
 
@@ -41,6 +43,11 @@ subroutine force_fine(ilevel,icount)
   if(ndim>2)skip_loc(3)=dble(kcoarse_min)
   scale=boxlen/dble(nx_loc)
   dx_loc=dx*scale
+
+
+  fourpi=4.0D0*ACOS(-1.0D0)
+  if(cosmo)fourpi=1.5D0*omega_m*aexp
+  fact=-dx_loc**ndim/fourpi/2.0D0
 
   ! Set position of cell centers relative to grid center
   do ind=1,twotondim
