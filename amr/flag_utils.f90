@@ -540,6 +540,7 @@ subroutine geometry_refine(xx,ok,ncell,ilevel)
 
   ! Authorize refinement if cell lies within region,
   ! otherwise unmark cell (no refinement outside region)
+
   if(r_refine(ilevel)>-1.0)then
      er=exp_refine(ilevel) ! Exponent defining norm
      xr=x_refine  (ilevel) ! Region centre
@@ -574,7 +575,10 @@ subroutine geometry_refine(xx,ok,ncell,ilevel)
         else
            r=max(xn,yn,zn)
         end if
-        ok(i)=ok(i).and.(r < 1.0)
+        !ok(i)=ok(i).and.(r < 1.0)
+        !----- JS -----
+        ! Force refine with this geometry condition
+        ok(i) = ok(i) .or. (r<1.0)
      end do
   endif
 

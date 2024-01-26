@@ -365,6 +365,7 @@ subroutine read_params
   end if
 
   call read_hydro_params(nml_ok)
+
 #ifdef RT
   call rt_read_hydro_params(nml_ok)
 #endif
@@ -434,6 +435,7 @@ subroutine read_params
      exp_refine  (i)=exp_refine  (i-levelmin+1)
      initfile    (i)=initfile    (i-levelmin+1)
   end do
+
   do i=1,levelmin-1
      nexpand     (i)= 1
      nsubcycle   (i)= 1
