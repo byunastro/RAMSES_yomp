@@ -20,7 +20,7 @@ subroutine read_params
   character(LEN=5)::nchar
   integer(kind=8)::ngridtot=0
   integer(kind=8)::nparttot=0
-  real(kind=8)::delta_tout=0,tend=0
+  real(kind=8)::delta_tout=0,tend=0,t_restart=0
   real(kind=8)::delta_aout=0,aend=0
   logical::nml_ok, info_ok, restart_file_ok
   integer,parameter::tag=1134
@@ -38,8 +38,9 @@ subroutine read_params
        & ,static_dm,static_gas,static_stars,convert_birth_times,use_proper_time,remap_pscalar &
        & ,dtstop,magic_number,nchunk,dtmax,sinkprops_dir
   namelist/output_params/output,noutput,foutput,aout,tout &
-       & ,tend,delta_tout,aend,delta_aout,gadget_output,walltime_hrs,minutes_dump &
+       & ,tend,t_restart,delta_tout,aend,delta_aout,gadget_output,walltime_hrs,minutes_dump &
        & ,early_stop_hrs,dump_stop,foutput_timer,wallstep
+   ! add new parameter, t_restart
   namelist/amr_params/levelmin,levelmax,ngridmax,ngridtot &
        & ,npartmax,nparttot,nexpand,boxlen,nlevel_collapse &
        & ,nsinkmax,levelhold,holdback
@@ -277,10 +278,17 @@ subroutine read_params
   !-------------------------------------------------
   if(tend>0)then
      if(delta_tout==0)delta_tout=tend
-     noutput=MIN(int(tend/delta_tout),MAXOUT)
-     do i=1,noutput
-        tout(i)=dble(i)*delta_tout
-     end do
+     noutput=MIN(int((tend - t_restart)/delta_tout),MAXOUT) + nrestart
+      if(t_restart>0)then
+         do i=1,noutput
+            tout(i)=dble(i)*delta_tout + (t_restart - delta_tout*nrestart)
+         end do
+      else
+         do i=1,noutput
+            tout(i)=dble(i)*delta_tout
+         end do
+      end if
+      ! add t_restart
   else if(aend>0)then
      if(delta_aout==0)delta_aout=aend
      noutput=MIN(int(aend/delta_aout),MAXOUT)
